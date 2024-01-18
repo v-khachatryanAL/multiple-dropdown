@@ -1,4 +1,4 @@
-import type { App, Directive, DirectiveBinding, HtmlHTMLAttributes } from 'vue';
+import type { App, Directive, DirectiveBinding } from 'vue';
 
 const clickOutsideDirective: Directive = {
   mounted(el: HTMLElement | any, binding: DirectiveBinding) {

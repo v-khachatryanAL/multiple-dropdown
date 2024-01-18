@@ -9,6 +9,9 @@ module.exports = {
 
     theme: {
         extend: {
+            backgroundImage: {
+                coverImg: "url('./src/assets/images/cover.png')",
+            },            
             colors: {},
             fontSize: {
                 "heading-lg": "72px",

@@ -1,5 +1,5 @@
 <template>
-  <div v-click-outside="closeDropdown" class="min-w-[218px] relative bg-white border rounded border-gray-500" >   
+  <div v-click-outside="closeDropdown" class="min-w-[218px] max-w-[600px] w-full relative bg-white border rounded border-gray-500" >   
     <div class="relative" >
       <input 
         v-if="filterable"
@@ -8,14 +8,14 @@
         @input="filter"
         class=" w-full h-9 px-2 outline-none rounded" 
         :placeholder="multiple ? placeholder : 'search'" 
-      />   
+      />
       <p 
         v-if="!filterable && !multiple" 
         @click="isOpen=!isOpen" 
         :class="filterQuery ? 'text-gray-700': 'text-gray-400'" 
         class="ml-2 h-[38px] flex items-center"
       >
-        {{filterQuery ? filterQuery : 'Select'  }}
+        {{ filterQuery ? filterQuery : 'Select' }}
       </p>        
       <p 
         v-if="!filterable && multiple && !selected.length" 
@@ -31,8 +31,8 @@
       />
       <div 
         v-if="selected.length && multiple" 
-        :class="{'pt-2':!filterable}" 
-        class="flex flex-wrap gap-1 ml-1 mr-7 pb-2"
+        :class="{'pt-2 pb-2':!filterable, 'absolute top-2 pb-1 bg-white':(!isOpen && filterable), 'pb-2': isOpen}" 
+        class="flex flex-wrap gap-2 ml-1 mr-7 pb-1"
       >
         <Chip 
           v-for="chip in selected"
@@ -47,6 +47,7 @@
             <div
               v-for="option in filteredData" :key="option.id"
               @click="onSelectItem(option)"
+              @mouseenter="hoveredItem(option)"
               :class="{'font-bold flex justify-between items-center bg-indigo-50':checkSelected(option)}"
               class="px-1.5 py-1 my-1 hover:bg-indigo-500 rounded hover:text-white text-gray-600 text-base group"
             >
@@ -70,8 +71,10 @@ import { ref } from 'vue'
 import IconDropdownArrow from '../icons/IconDropdownArrow.vue' 
 import IconCheck from '../icons/IconCheck.vue' 
 import Chip from './Chip.vue' 
-
 import type { option } from '../../types/option'
+import { useDropdown } from '../../stores/dropdown'
+
+const dropdownStore = useDropdown()
 
 interface Props {
   options: option[]
@@ -98,6 +101,8 @@ const isOpen = ref<boolean>(false)
 const selected = ref<option[]>([])
 const filteredData = ref<option[]>(props.options)
 
+
+
 const onSelectItem = (option: option) => {
   if (props.multiple) {
     const index = selected.value.findIndex(elem => elem.id === option.id)
@@ -106,6 +111,8 @@ const onSelectItem = (option: option) => {
     } else if(index !== -1) {
       selected.value.splice(index, 1)
     }
+    filterQuery.value = ''  
+    filteredData.value = props.options
   }
   if (!props.multiple) {
     const index = selected.value.findIndex(elem => elem.id === option.id)
@@ -118,6 +125,7 @@ const onSelectItem = (option: option) => {
     }
     filteredData.value = props.options
   }
+  // emit to pass selected options to the parent component
   emit('change', selected.value)
 }
 
@@ -141,11 +149,10 @@ const filter = (e: Event) => {
 const closeDropdown = () => {
   isOpen.value = false
 }
+const hoveredItem = (option: option) =>{
+  dropdownStore.setHoveredItem(option)
+}
 </script>
-
-<style scoped>
-
-</style>
 
 
 <!-- Example -->
@@ -169,7 +176,6 @@ Props
 3):filterable="true" or false---------for search within the dropdown.
 4):multiple="true" or false-----------possibility to choose several options.
 5)placeholder="example"---------------what should be shown when the input is empty
-6)@change="onChangeSelectedData"
-This event 
+6)@change="onChangeSelectedData"------event to receive selected options to the parent component
 
 -->
