@@ -6,7 +6,8 @@
         v-model="filterQuery"
         @focus="isOpen=true" 
         @input="filter"
-        class=" w-full h-9 px-2 outline-none rounded" 
+        class=" w-full h-9 px-2 outline-none rounded"
+        :class="{'absolute top-2 pb-1 -z-50':(!isOpen && filterable && multiple && selected.length)}"
         :placeholder="multiple ? placeholder : 'search'" 
       />
       <p 
@@ -31,8 +32,8 @@
       />
       <div 
         v-if="selected.length && multiple" 
-        :class="{'pt-2 pb-2':!filterable, 'absolute top-2 pb-1 bg-white':(!isOpen && filterable), 'pb-2': isOpen}" 
-        class="flex flex-wrap gap-2 ml-1 mr-7 pb-1"
+        :class="{'pt-2 pb-2':!filterable, 'pt-2': !isOpen}" 
+        class="flex flex-wrap w-[calc(100%-30px)] gap-2 ml-1 mr-7 pb-2"
       >
         <Chip 
           v-for="chip in selected"
