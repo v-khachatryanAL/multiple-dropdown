@@ -12,7 +12,6 @@ const { options, hoveredDropdownItem } = storeToRefs(dropdownStore)
 const selectedData = ref<option[]>([])
 
 function onChangeSelectedData (data:option[])  {
-  selectedData.value = data
   dropdownStore.setSelectedData(data)
 }
 </script>
@@ -21,13 +20,14 @@ function onChangeSelectedData (data:option[])  {
   <div
     class="bg-coverImg bg-no-repeat min-h-screen bg-cover flex items-center justify-end font-inter h-screen py-10 lg:py-5 px-4 gap-10 lg:gap-2 flex-col-reverse lg:justify-center lg:flex-row"
   >
-    <dropdown 
-      :options="options" 
+    <dropdown
+      v-model="selectedData" 
+      :options="options"
       :maxSelectLength="5" 
       :filterable="true"
       :multiple="true"
       placeholder="Add up to 5 robots"
-      @change="onChangeSelectedData"
+      @update:model-value="onChangeSelectedData"
     />
     <robotsImage v-if="hoveredDropdownItem" :hoveredRobotItem="hoveredDropdownItem.imgSrc"/>
   </div>
